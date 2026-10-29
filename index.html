@@ -1,0 +1,510 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta name="theme-color" content="#10131c">
+  <meta name="description" content="Aplicativo Saimo">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Saimo">
+
+  <title>Saimo - Aplicativo</title>
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      width: 100%;
+      background: #10131c;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    #login {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      padding-top: max(24px, env(safe-area-inset-top));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+    }
+
+    .card {
+      width: 100%;
+      max-width: 380px;
+      padding: 30px 24px;
+      background: #191e2b;
+      border: 1px solid #30394d;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px #0005;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      border-radius: 20px;
+      background: #293650;
+      color: #49dcb1;
+      font-size: 38px;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: 27px;
+    }
+
+    .description {
+      margin: 0 0 26px;
+      color: #aeb8cb;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 14px;
+    }
+
+    .password-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      border: 1px solid #424c61;
+      border-radius: 10px;
+      background: #10131c;
+    }
+
+    .password-wrap:focus-within {
+      border-color: #49dcb1;
+    }
+
+    #password {
+      width: 100%;
+      min-width: 0;
+      height: 48px;
+      color: #ffffff;
+      background: transparent;
+      border: 0;
+      outline: none;
+    }
+
+    .show-password {
+      padding: 8px 0 8px 8px;
+      color: #c7d0df;
+      background: transparent;
+      border: 0;
+      font-size: 13px;
+    }
+
+    #submit {
+      width: 100%;
+      height: 48px;
+      margin-top: 17px;
+      border: 0;
+      border-radius: 10px;
+      background: #49dcb1;
+      color: #102019;
+      font-weight: bold;
+    }
+
+    #submit:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    #message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    #message.error {
+      display: block;
+      color: #ffb6b6;
+      background: #48252d;
+    }
+
+    #message.info {
+      display: block;
+      color: #c6d8ff;
+      background: #24334f;
+    }
+
+    #app {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+      min-height: 56px;
+      padding: 8px 14px;
+      background: #191e2b;
+    }
+
+    header strong {
+      font-size: 18px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .small-button {
+      padding: 10px 12px;
+      color: #ffffff;
+      background: #30394d;
+      border: 0;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    #site-container {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+    }
+
+    #site {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #10131c;
+    }
+
+    #external {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+      padding: 24px;
+      text-align: center;
+      background: #10131c;
+    }
+
+    #external p {
+      color: #b9c2d3;
+      line-height: 1.6;
+    }
+
+    .external-link {
+      padding: 12px 18px;
+      border-radius: 9px;
+      background: #49dcb1;
+      color: #102019;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TELA DE ACESSO -->
+  <section id="login">
+    <div class="card">
+
+      <div class="logo">S</div>
+
+      <h1>Bem-vindo ao Saimo</h1>
+
+      <p class="description">
+        Digite seu código de acesso para entrar.
+      </p>
+
+      <form id="login-form">
+        <label for="password">Senha de acesso</label>
+
+        <div class="password-wrap">
+          <input
+            id="password"
+            type="password"
+            placeholder="Digite sua senha"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            required
+          >
+
+          <button
+            class="show-password"
+            type="button"
+            id="toggle-password"
+          >Mostrar</button>
+        </div>
+
+        <button id="submit" type="submit">Entrar</button>
+
+        <div id="message" role="status" aria-live="polite"></div>
+      </form>
+
+    </div>
+  </section>
+
+  <!-- APLICATIVO SAIMO -->
+  <section id="app">
+
+    <header>
+      <strong>Saimo</strong>
+
+      <div class="header-actions">
+        <button class="small-button" id="reload" type="button">
+          Atualizar
+        </button>
+
+        <button class="small-button" id="logout" type="button">
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <main id="site-container">
+
+      <iframe
+        id="site"
+        title="Saimo"
+        allow="fullscreen; autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+        referrerpolicy="no-referrer"
+      ></iframe>
+
+      <div id="external">
+        <h2>Não foi possível exibir o site aqui</h2>
+
+        <p>
+          O site pode bloquear a incorporação.
+          Tente abri-lo diretamente no navegador.
+        </p>
+
+        <a
+          class="external-link"
+          href="https://saimo-tv.pages.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Abrir Saimo</a>
+
+        <button class="small-button" id="retry" type="button">
+          Tentar novamente
+        </button>
+      </div>
+
+    </main>
+  </section>
+
+  <script>
+    "use strict";
+
+    // ENDEREÇOS DO APLICATIVO
+    const PASSWORDS_URL =
+      "https://raw.githubusercontent.com/Isac-Arqueiro/mylist/refs/heads/main/senhas.json";
+
+    const SITE_URL = "https://saimo-tv.pages.dev";
+
+    // NOME DA AUTORIZAÇÃO SALVA NESTE DISPOSITIVO
+    const AUTH_KEY = "saimo_autorizado";
+
+    const login = document.getElementById("login");
+    const app = document.getElementById("app");
+    const form = document.getElementById("login-form");
+    const passwordInput = document.getElementById("password");
+    const submitButton = document.getElementById("submit");
+    const message = document.getElementById("message");
+    const frame = document.getElementById("site");
+    const external = document.getElementById("external");
+
+    // Mostra mensagens de erro ou informação.
+    function showMessage(text, type = "error") {
+      message.textContent = text;
+      message.className = type;
+    }
+
+    function clearMessage() {
+      message.textContent = "";
+      message.className = "";
+    }
+
+    // Abre o aplicativo depois da autorização.
+    function openApp() {
+      login.style.display = "none";
+      app.style.display = "flex";
+      external.style.display = "none";
+      frame.src = SITE_URL;
+    }
+
+    // Volta à tela de senha.
+    function closeApp() {
+      localStorage.removeItem(AUTH_KEY);
+
+      frame.src = "about:blank";
+      app.style.display = "none";
+      login.style.display = "flex";
+
+      passwordInput.value = "";
+      clearMessage();
+      passwordInput.focus();
+    }
+
+    // Mostrar ou ocultar a senha digitada.
+    document.getElementById("toggle-password")
+      .addEventListener("click", function () {
+        const showing = passwordInput.type === "text";
+
+        passwordInput.type = showing ? "password" : "text";
+        this.textContent = showing ? "Mostrar" : "Ocultar";
+      });
+
+    // Verifica a senha consultando o JSON.
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      clearMessage();
+
+      const enteredPassword = passwordInput.value.trim();
+
+      if (!enteredPassword) {
+        showMessage("Digite sua senha.");
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Verificando...";
+
+      try {
+        const response = await fetch(PASSWORDS_URL, {
+          cache: "no-store",
+          mode: "cors",
+          credentials: "omit"
+        });
+
+        if (!response.ok) {
+          throw new Error("Não foi possível consultar as senhas.");
+        }
+
+        const passwords = await response.json();
+
+        // O JSON precisa ser uma lista de textos.
+        if (
+          !Array.isArray(passwords) ||
+          !passwords.every(item => typeof item === "string")
+        ) {
+          throw new Error("O formato do arquivo JSON é inválido.");
+        }
+
+        const valid = passwords.some(
+          item => item.trim() === enteredPassword
+        );
+
+        if (!valid) {
+          showMessage("Senha incorreta. Tente novamente.");
+          passwordInput.select();
+          return;
+        }
+
+        // Guarda somente a autorização, não a senha.
+        localStorage.setItem(AUTH_KEY, "sim");
+
+        openApp();
+
+      } catch (error) {
+        console.error("Erro ao verificar acesso:", error);
+
+        showMessage(
+          "Não foi possível verificar a senha. " +
+          "Verifique sua internet e tente novamente."
+        );
+
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Entrar";
+      }
+    });
+
+    // Atualiza o site.
+    document.getElementById("reload").addEventListener("click", () => {
+      external.style.display = "none";
+      frame.src = SITE_URL;
+    });
+
+    // Sai e apaga a autorização salva.
+    document.getElementById("logout").addEventListener("click", closeApp);
+
+    // Tenta carregar o site novamente.
+    document.getElementById("retry").addEventListener("click", () => {
+      external.style.display = "none";
+      frame.src = SITE_URL;
+    });
+
+    // Lembra o acesso nas próximas aberturas.
+    // A autorização fica neste navegador/dispositivo.
+    try {
+      if (localStorage.getItem(AUTH_KEY) === "sim") {
+        openApp();
+      }
+    } catch (error) {
+      console.warn("Não foi possível recuperar a autorização.");
+    }
+
+    // Registra o service worker do PWA.
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+          .catch(error => {
+            console.error("Erro ao registrar o PWA:", error);
+          });
+      });
+    }
+  </script>
+
+</body>
+</html>
